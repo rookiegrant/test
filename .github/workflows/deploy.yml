@@ -1,0 +1,25 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+      - main  # 只对推送到 main 分支时触发
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2  # 检出仓库代码
+
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::<AWS_ACCOUNT_ID>:role/<ROLE_NAME>  # AWS 角色 ARN
+          aws-region: us-east-1  # AWS 区域
+          web-identity-token-file: ${{ github.token }}  # OIDC 令牌
+
+      - name: Deploy application
+        run: |
+          echo "Deploying application to AWS..."  # 这里可以放你的部署命令
